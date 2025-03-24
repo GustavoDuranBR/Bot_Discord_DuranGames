@@ -100,6 +100,19 @@ class ComandosBot(commands.Cog):
         """
         await ctx.send(ajuda_msg)
 
+    @commands.command()
+    async def verificar_todos_cargos(self, ctx, usuario: discord.Member):
+        """Mostra todos os cargos do usuário mencionado."""
+        print(f"Comando verificar_todos_cargos chamado por {ctx.author}")  # Debug
+        
+        cargos = [role.name for role in usuario.roles if role.name != "@everyone"]
+        
+        if cargos:
+            cargos_lista = ", ".join(cargos)
+            await ctx.send(f"{usuario.name} possui os seguintes cargos: {cargos_lista}")
+        else:
+            await ctx.send(f"{usuario.name} não possui nenhum cargo além do padrão.")
+
 # Função para adicionar o cog ao bot
 async def setup(bot):
     await bot.add_cog(ComandosBot(bot))
