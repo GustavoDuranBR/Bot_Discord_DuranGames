@@ -70,7 +70,8 @@ class SetupServer(commands.Cog):
             # Emojis e cargos correspondentes
             emojis_cargos = {
                 "🎮": "Jogador",
-                "🏆": "VIP"
+                "🏆": "VIP",
+                "🛠️": "Moderador"
             }
 
             for emoji, cargo_nome in emojis_cargos.items():
@@ -83,5 +84,46 @@ class SetupServer(commands.Cog):
 
         print("Servidor configurado com sucesso!")
 
+    # Verificação de cargo ao adicionar uma reação
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction, user):
+        # Verifica se a reação foi adicionada na mensagem correta
+        if reaction.message.id == 1352568323186888744:  # ID da mensagem com os Reaction Roles
+            cargo_nome = ""
+            if reaction.emoji == "🎮":
+                cargo_nome = "Jogador"
+            elif reaction.emoji == "🏆":
+                cargo_nome = "VIP"
+            elif reaction.emoji == "🛠️":
+                cargo_nome = "Moderador"
+
+            # Obtém o cargo do servidor
+            guild = reaction.message.guild
+            cargo = discord.utils.get(guild.roles, name=cargo_nome)
+            
+            if cargo in user.roles:
+                print(f"O usuário {user.name} tem o cargo {cargo_nome}.")
+            else:
+                print(f"O usuário {user.name} NÃO tem o cargo {cargo_nome}.")
+
+    # Comando para verificar se o usuário tem o cargo
+    @commands.command()
+    async def verificar_cargo(self, ctx, usuario: discord.Member, cargo_nome: str):
+        print(f"Comando verificar_cargo chamado por {ctx.author.name} para o usuário {usuario.name} e cargo {cargo_nome}.")
+        
+        cargo = discord.utils.get(ctx.guild.roles, name=cargo_nome)
+        
+        if cargo is None:
+            await ctx.send(f"O cargo {cargo_nome} não foi encontrado no servidor.")
+            print(f"Cargo {cargo_nome} não encontrado.")
+            return
+
+        if cargo in usuario.roles:
+            await ctx.send(f"{usuario.name} tem o cargo {cargo_nome}.")
+            print(f"{usuario.name} tem o cargo {cargo_nome}.")
+        else:
+            await ctx.send(f"{usuario.name} NÃO tem o cargo {cargo_nome}.")
+            print(f"{usuario.name} NÃO tem o cargo {cargo_nome}.")
+
 async def setup(bot):
-    await bot.add_cog(SetupServer(bot)) 
+    await bot.add_cog(SetupServer(bot))

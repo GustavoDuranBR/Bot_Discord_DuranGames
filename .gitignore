@@ -1,3 +1,7 @@
 venv/
+data/
 .env
 Regras_DuranGames.md
+settings.db
+cogs/__pycache__/
+data/

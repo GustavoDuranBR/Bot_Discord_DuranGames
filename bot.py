@@ -3,6 +3,8 @@ from discord.ext import commands
 import os
 import asyncio
 from dotenv import load_dotenv
+from database import connect_db
+
 
 # Carrega as variáveis do .env
 load_dotenv()
@@ -52,4 +54,5 @@ async def main():
 
 # Roda o bot corretamente
 if __name__ == "__main__":
+    connect_db()  # Cria tabela se não existir
     asyncio.run(main())
